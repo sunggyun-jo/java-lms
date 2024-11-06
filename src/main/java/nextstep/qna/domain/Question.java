@@ -7,7 +7,8 @@ import org.springframework.util.ObjectUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Question {
     private Long id;
@@ -79,22 +80,25 @@ public class Question {
         return answers;
     }
 
-    public void delete(NsUser loginUser) throws CannotDeleteException{
+    public List<DeleteHistory> delete(NsUser loginUser) throws CannotDeleteException {
         if (!isOwner(loginUser)) {
             throw new CannotDeleteException("질문을 삭제할 권한이 없습니다.");
         }
 
-        if(hasAnotherAnswers()) {
+        if (hasAnotherAnswers()) {
             throw new CannotDeleteException("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
         }
         this.deleted = true;
-        deleteAnswers();
+        DeleteHistory deleteHistory = new DeleteHistory(ContentType.QUESTION, getId(), getWriter(), LocalDateTime.now());
+        return Stream.concat(Stream.of(deleteHistory), deleteAnswers().stream()).collect(Collectors.toList());
     }
 
-    private void deleteAnswers() {
+    private List<DeleteHistory> deleteAnswers() {
         if (!ObjectUtils.isEmpty(answers)) {
-            answers.forEach(Answer::delete);
+            return answers.stream().map(Answer::delete).collect(Collectors.toList());
         }
+
+        return List.of();
     }
 
     private boolean hasAnotherAnswers() {

@@ -5,7 +5,8 @@ import nextstep.users.domain.NsUser;
 import nextstep.users.domain.NsUserTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.ObjectUtils;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -63,7 +64,7 @@ public class QuestionTest {
 
     @Test
     @DisplayName("질문자와 답변글의 모든 답변자가 같은 경우 삭제 가능하다.")
-    void deleteQuestionWithMyAnswers() throws CannotDeleteException{
+    void deleteQuestionWithMyAnswers() throws CannotDeleteException {
         NsUser loginUser = NsUserTest.JAVAJIGI;
         Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
         Answer answer = new Answer(NsUserTest.JAVAJIGI, question, "content1");
@@ -76,7 +77,7 @@ public class QuestionTest {
 
     @Test
     @DisplayName("질문을 삭제 할 때 답변 또한 삭제 한다.")
-    void deleteQuestionAndMyAnswers() throws CannotDeleteException{
+    void deleteQuestionAndMyAnswers() throws CannotDeleteException {
         NsUser loginUser = NsUserTest.JAVAJIGI;
         Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
         Answer answer1 = new Answer(NsUserTest.JAVAJIGI, question, "content1");
@@ -92,5 +93,19 @@ public class QuestionTest {
         assertThat(question.isDeleted()).isTrue();
         assertThat(answer1.isDeleted()).isTrue();
         assertThat(answer2.isDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("질문과 답변 삭제 이력을 DeleteHistory 에 남긴다.")
+    void deleteQuestionAndGetDeleteHistories() throws CannotDeleteException {
+        NsUser loginUser = NsUserTest.JAVAJIGI;
+        Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
+        Answer answer1 = new Answer(NsUserTest.JAVAJIGI, question, "content1");
+        Answer answer2 = new Answer(NsUserTest.JAVAJIGI, question, "content2");
+        question.addAnswer(answer1);
+        question.addAnswer(answer2);
+
+        List<DeleteHistory> deleteHistoryList = question.delete(loginUser);
+        assertThat(deleteHistoryList).hasSize(3);
     }
 }
