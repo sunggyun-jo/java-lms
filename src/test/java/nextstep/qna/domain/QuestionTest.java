@@ -5,6 +5,7 @@ import nextstep.users.domain.NsUser;
 import nextstep.users.domain.NsUserTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.ObjectUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -71,5 +72,25 @@ public class QuestionTest {
         assertThat(question.isDeleted()).isFalse();
         question.delete(loginUser);
         assertThat(question.isDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("질문을 삭제 할 때 답변 또한 삭제 한다.")
+    void deleteQuestionAndMyAnswers() throws CannotDeleteException{
+        NsUser loginUser = NsUserTest.JAVAJIGI;
+        Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
+        Answer answer1 = new Answer(NsUserTest.JAVAJIGI, question, "content1");
+        Answer answer2 = new Answer(NsUserTest.JAVAJIGI, question, "content2");
+        question.addAnswer(answer1);
+        question.addAnswer(answer2);
+
+        assertThat(question.isDeleted()).isFalse();
+        assertThat(answer1.isDeleted()).isFalse();
+        assertThat(answer2.isDeleted()).isFalse();
+
+        question.delete(loginUser);
+        assertThat(question.isDeleted()).isTrue();
+        assertThat(answer1.isDeleted()).isTrue();
+        assertThat(answer2.isDeleted()).isTrue();
     }
 }
