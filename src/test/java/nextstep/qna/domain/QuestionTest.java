@@ -33,4 +33,18 @@ public class QuestionTest {
             question.delete(loginUser);
         }).isInstanceOf(CannotDeleteException.class);
     }
+
+    @Test
+    @DisplayName("답변이 있는 경우 삭제가 불가능하다")
+    void deleteQuestionWithAnswers() {
+        NsUser loginUser = NsUserTest.JAVAJIGI;
+        Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
+        question.addAnswer(new Answer());
+
+        assertThat(question.isDeleted()).isFalse();
+
+        assertThatThrownBy(() -> {
+            question.delete(loginUser);
+        }).isInstanceOf(CannotDeleteException.class);
+    }
 }
