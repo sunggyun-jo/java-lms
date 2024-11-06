@@ -15,7 +15,7 @@ public class QuestionTest {
 
     @Test
     @DisplayName("질문 상태를 삭제 상태로 변경")
-    void deleteQuestion() throws Exception {
+    void deleteQuestion() throws CannotDeleteException {
         Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
         assertThat(question.isDeleted()).isFalse();
         question.delete(NsUserTest.JAVAJIGI);
@@ -35,17 +35,14 @@ public class QuestionTest {
     }
 
     @Test
-    @DisplayName("답변이 있는 경우 삭제가 불가능하다")
-    void deleteQuestionWithAnswers() {
+    @DisplayName("답변이 없는 경우 삭제가 가능하다")
+    void deleteQuestionWithoutAnswers() throws CannotDeleteException {
         NsUser loginUser = NsUserTest.JAVAJIGI;
         Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
-        question.addAnswer(new Answer());
 
         assertThat(question.isDeleted()).isFalse();
-
-        assertThatThrownBy(() -> {
-            question.delete(loginUser);
-        }).isInstanceOf(CannotDeleteException.class);
+        question.delete(loginUser);
+        assertThat(question.isDeleted()).isTrue();
     }
 
     @Test
@@ -61,5 +58,18 @@ public class QuestionTest {
         assertThatThrownBy(() -> {
             question.delete(loginUser);
         }).isInstanceOf(CannotDeleteException.class);
+    }
+
+    @Test
+    @DisplayName("질문자와 답변글의 모든 답변자가 같은 경우 삭제 가능하다.")
+    void deleteQuestionWithMyAnswers() throws CannotDeleteException{
+        NsUser loginUser = NsUserTest.JAVAJIGI;
+        Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
+        Answer answer = new Answer(NsUserTest.JAVAJIGI, question, "content1");
+        question.addAnswer(answer);
+
+        assertThat(question.isDeleted()).isFalse();
+        question.delete(loginUser);
+        assertThat(question.isDeleted()).isTrue();
     }
 }
