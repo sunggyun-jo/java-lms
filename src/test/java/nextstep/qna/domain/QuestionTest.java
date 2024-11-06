@@ -47,4 +47,19 @@ public class QuestionTest {
             question.delete(loginUser);
         }).isInstanceOf(CannotDeleteException.class);
     }
+
+    @Test
+    @DisplayName("질문자와 답변자가 다른 경우 예외를 발생 시킨다")
+    void deleteQuestionWithAnswersByAnother() {
+        NsUser loginUser = NsUserTest.JAVAJIGI;
+        Question question = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
+        Answer answer = new Answer(NsUserTest.SANJIGI, question, "content1");
+        question.addAnswer(answer);
+
+        assertThat(question.isDeleted()).isFalse();
+
+        assertThatThrownBy(() -> {
+            question.delete(loginUser);
+        }).isInstanceOf(CannotDeleteException.class);
+    }
 }

@@ -84,14 +84,17 @@ public class Question {
             throw new CannotDeleteException("질문을 삭제할 권한이 없습니다.");
         }
 
-        if(hasAnswers()) {
+        if(hasAnotherAnswers()) {
             throw new CannotDeleteException("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
         }
         this.deleted = true;
     }
 
-    private boolean hasAnswers() {
-        return !ObjectUtils.isEmpty(answers);
+    private boolean hasAnotherAnswers() {
+        if (ObjectUtils.isEmpty(answers)) {
+            return false;
+        }
+        return answers.stream().anyMatch(answer -> !answer.isOwner(writer));
     }
 
     private boolean isOwner(NsUser loginUser) {
