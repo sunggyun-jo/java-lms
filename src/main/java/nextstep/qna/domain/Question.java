@@ -1,10 +1,14 @@
 package nextstep.qna.domain;
 
+import nextstep.qna.CannotDeleteException;
 import nextstep.users.domain.NsUser;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Question {
     private Long id;
@@ -68,21 +72,44 @@ public class Question {
         answers.add(answer);
     }
 
-    public boolean isOwner(NsUser loginUser) {
-        return writer.equals(loginUser);
-    }
-
-    public Question setDeleted(boolean deleted) {
-        this.deleted = deleted;
-        return this;
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
 
     public List<Answer> getAnswers() {
         return answers;
+    }
+
+    public List<DeleteHistory> delete(NsUser loginUser) throws CannotDeleteException {
+        if (!isOwner(loginUser)) {
+            throw new CannotDeleteException("질문을 삭제할 권한이 없습니다.");
+        }
+
+        if (hasAnotherAnswers()) {
+            throw new CannotDeleteException("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
+        }
+        this.deleted = true;
+        DeleteHistory deleteHistory = new DeleteHistory(ContentType.QUESTION, getId(), getWriter(), LocalDateTime.now());
+        return Stream.concat(Stream.of(deleteHistory), deleteAnswers().stream()).collect(Collectors.toList());
+    }
+
+    private List<DeleteHistory> deleteAnswers() {
+        if (!ObjectUtils.isEmpty(answers)) {
+            return answers.stream().map(Answer::delete).collect(Collectors.toList());
+        }
+
+        return List.of();
+    }
+
+    private boolean hasAnotherAnswers() {
+        if (ObjectUtils.isEmpty(answers)) {
+            return false;
+        }
+        return answers.stream().anyMatch(answer -> !answer.isOwner(writer));
+    }
+
+    private boolean isOwner(NsUser loginUser) {
+        return writer.equals(loginUser);
     }
 
     @Override
