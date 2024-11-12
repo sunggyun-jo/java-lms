@@ -40,7 +40,7 @@
 
 ### TODO
 - [x] 1단계 피드백 반영 - DeleteHistory에 Question, Answer를 위한 factory method 추가
-- [ ] 1단계 피드백 반영 - List<Answer> 를 일급 컬렉션 Answers 로 작성
+- [x] 1단계 피드백 반영 - List<Answer> 를 일급 컬렉션 Answers 로 작성
 - [ ] 1단계 피드백 반영 - List<DeleteHistory> 를 일급 컬렉션 DeleteHistories 로 작성
 - [ ] 과정(Course)은 기수 단위로 운영하며, 여러 개의 강의(Session)를 가질 수 있다.
 - [ ] 강의는 시작일과 종료일을 가진다.
