@@ -89,7 +89,7 @@ public class Question {
             throw new CannotDeleteException("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
         }
         this.deleted = true;
-        DeleteHistory deleteHistory = new DeleteHistory(ContentType.QUESTION, getId(), getWriter(), LocalDateTime.now());
+        DeleteHistory deleteHistory = DeleteHistory.ofQuestion(getId(), getWriter());
         return Stream.concat(Stream.of(deleteHistory), deleteAnswers().stream()).collect(Collectors.toList());
     }
 
