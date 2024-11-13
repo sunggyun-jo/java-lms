@@ -42,7 +42,8 @@
 - [x] 1단계 피드백 반영 - DeleteHistory에 Question, Answer를 위한 factory method 추가
 - [x] 1단계 피드백 반영 - List<Answer> 를 일급 컬렉션 Answers 로 작성
 - [x] 1단계 피드백 반영 - List<DeleteHistory> 를 일급 컬렉션 DeleteHistories 로 작성
-- [ ] 과정(Course)은 기수 단위로 운영하며, 여러 개의 강의(Session)를 가질 수 있다.
+- [x] 과정(Course)은 기수 단위로 운영한다.
+- [ ] 과정(Course)은 여러 개의 강의(Session)를 가질 수 있다.
 - [ ] 강의는 시작일과 종료일을 가진다.
 - [ ] 강의는 강의 커버 이미지 정보를 가진다.
 - [ ] 이미지 크기는 1MB 이하여야 한다.

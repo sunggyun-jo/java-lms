@@ -9,6 +9,11 @@ public class Course {
 
     private Long creatorId;
 
+    /**
+     * 기수 번호
+     */
+    private Integer term;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
@@ -21,9 +26,14 @@ public class Course {
     }
 
     public Course(Long id, String title, Long creatorId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this(id, title, creatorId, 0, createdAt, updatedAt);
+    }
+
+    public Course(Long id, String title, Long creatorId, Integer term, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
         this.creatorId = creatorId;
+        this.term = term;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -49,5 +59,9 @@ public class Course {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
+    }
+
+    public Integer getTerm() {
+        return term;
     }
 }
