@@ -4,8 +4,6 @@ import nextstep.users.domain.NsUserTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AnswersTest {
@@ -24,15 +22,15 @@ public class AnswersTest {
     @DisplayName("답변 목록을 삭제 한다")
     void deleteAnswers() {
         Answers emptyAnswers = new Answers();
-        List<DeleteHistory> emptyDeleteHistoryList = emptyAnswers.deleteAnswers();
-        assertThat(emptyDeleteHistoryList).isEmpty();
+        DeleteHistories emptyDeleteHistoryList = emptyAnswers.deleteAnswers();
+        assertThat(emptyDeleteHistoryList.asList()).isEmpty();
 
         Answers answers = new Answers();
         answers.add(AnswerTest.A1);
         answers.add(AnswerTest.A2);
 
-        List<DeleteHistory> deleteHistoryList = answers.deleteAnswers();
-        assertThat(deleteHistoryList).contains(
+        DeleteHistories deleteHistoryList = answers.deleteAnswers();
+        assertThat(deleteHistoryList.asList()).contains(
                 DeleteHistory.ofAnswer(AnswerTest.A1.getId(), AnswerTest.A1.getWriter()),
                 DeleteHistory.ofAnswer(AnswerTest.A2.getId(), AnswerTest.A2.getWriter())
         );

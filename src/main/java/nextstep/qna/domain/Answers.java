@@ -26,7 +26,8 @@ public class Answers {
         return answers.stream().anyMatch(answer -> !answer.isOwner(javajigi));
     }
 
-    public List<DeleteHistory> deleteAnswers() {
-        return answers.stream().map(Answer::delete).collect(Collectors.toList());
+    public DeleteHistories deleteAnswers() {
+        List<DeleteHistory> deleteHistories = answers.stream().map(Answer::delete).collect(Collectors.toList());
+        return new DeleteHistories(deleteHistories);
     }
 }

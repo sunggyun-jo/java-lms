@@ -5,8 +5,6 @@ import nextstep.users.domain.NsUser;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Question {
     private Long id;
@@ -87,13 +85,12 @@ public class Question {
             throw new CannotDeleteException("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
         }
         this.deleted = true;
-        DeleteHistory deleteHistory = DeleteHistory.ofQuestion(getId(), getWriter());
-        return Stream.concat(Stream.of(deleteHistory), deleteAnswers().stream()).collect(Collectors.toList());
+        DeleteHistories deleteHistories = new DeleteHistories();
+        deleteHistories.add(DeleteHistory.ofQuestion(getId(), getWriter()));
+        deleteHistories.add(answers.deleteAnswers());
+        return deleteHistories.asList();
     }
 
-    private List<DeleteHistory> deleteAnswers() {
-        return answers.deleteAnswers();
-    }
 
     private boolean isOwner(NsUser loginUser) {
         return writer.equals(loginUser);
