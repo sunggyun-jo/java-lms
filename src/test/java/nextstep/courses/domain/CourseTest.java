@@ -16,4 +16,15 @@ public class CourseTest {
         Course course = new Course(1L, "TDD, 클린 코드 with Java 19기", 1L, term, LocalDateTime.now(), LocalDateTime.now());
         assertThat(course.getTerm()).isEqualTo(term);
     }
+
+    @Test
+    @DisplayName("과정(Course)은 여러 개의 강의(Session)를 가질 수 있다.")
+    void courseHasMultipleSessions() {
+        Course course = new Course(1L, "TDD, 클린 코드 with Java 19기", 1L, 19, LocalDateTime.now(), LocalDateTime.now());
+
+        Sessions sessions = new Sessions();
+        course.assign(sessions);
+
+        assertThat(course.getSessions()).isEqualTo(sessions);
+    }
 }

@@ -18,6 +18,8 @@ public class Course {
 
     private LocalDateTime updatedAt;
 
+    private Sessions sessions;
+
     public Course() {
     }
 
@@ -63,5 +65,13 @@ public class Course {
 
     public Integer getTerm() {
         return term;
+    }
+
+    public void assign(Sessions sessions) {
+        this.sessions = sessions;
+    }
+
+    public Sessions getSessions() {
+        return this.sessions;
     }
 }
